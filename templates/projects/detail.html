@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block context-nav %}
+  <ul>
+    <li><a href="{% url project-index %}">index</a></li>
+    <li><a href="{% url project-edit project.id %}">edit</a></li>
+  </ul>
+{% endblock %}
+
+{% block content %}
+  <h1>{{project.name}}</h1>
+  <p>{{project.created_on}}</p>
+  <p>{{project.description}}</p>
+{% endblock %}

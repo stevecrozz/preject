@@ -1,0 +1,34 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+<!doctype html>
+<html lang=en>
+  <head>
+    <meta charset=utf-8>
+    <title>Preject</title>
+    <style>
+      form label { display:block; float:left; width: 200px; }
+      form input[type=text], form textarea { width: 300px; margin: 0; padding: 0;}
+      form ul { list-style-type: none; padding: 0; margin: 0; width: 520px; }
+      form ul.errorlist { color: red; }
+      form li { margin: 5px 0; }
+      form .actions input { float: left; }
+      form .actions input { margin-left: 5px; }
+      form .actions input:first-of-type { margin-left: 200px; }
+      .nav ul { list-style-type: none; margin: 0; padding: 0;}
+      .nav li { display: inline; }
+    </style>
+    <link type="text/css" href="{{STATIC_PREFIX}}jquery-ui/css/le-frog/jquery-ui-1.8.14.custom.css" rel="Stylesheet" />
+    <script type="text/javascript" src="{{STATIC_PREFIX}}jquery-ui/js/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_PREFIX}}jquery-ui/js/jquery-ui-1.8.14.custom.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('.nav a').button();
+        $('.actions input').button();
+      });
+    </script>
+  </head>
+  <body>
+    <div class="nav">{% block context-nav %}{% endblock %}</div>
+    {% block content %}{% endblock %}
+  </body>
+</html>

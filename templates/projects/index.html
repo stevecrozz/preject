@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block context-nav %}
+  <ul>
+    <li><a href="{% url project-new %}">new</a></li>
+  </ul>
+{% endblock %}
+
+{% block content %}
+  <table>
+    <thead>
+      <tr><th>name</th><th>created on</th></tr>
+    </thead>
+    <tbody>
+    {% for p in projects %}
+      <tr>
+        <td><a href="{% url project-detail p.id %}">{{p.name}}</a></td>
+        <td>{{p.created_on}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
