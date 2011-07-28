@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% load url from future %}
+
+{% block content %}
+<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+  <ul>
+    {% csrf_token %}
+    {{form.as_ul}}
+    <li class="actions"><input type="submit" value="Login"></input></li>
+  </ul>
+</form>
+{% endblock %}

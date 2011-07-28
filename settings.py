@@ -91,6 +91,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'middleware.login_required_middleware.LoginRequiredMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -110,6 +111,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'projects',
 )
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/projects/'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

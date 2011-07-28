@@ -6,4 +6,5 @@ from django.conf.urls.defaults import patterns, include, url
 
 urlpatterns = patterns('',
     (r'^projects/', include('projects.urls')),
+    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
 )
