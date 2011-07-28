@@ -23,7 +23,10 @@ def new(request):
     if request.method == 'POST':
         f = ProjectForm(request.POST)
         if f.is_valid():
-            f.save()
+            project = f.save(commit=False)
+            project.created_by = request.user
+            project.updated_by = request.user
+            project.save()
             return HttpResponseRedirect(reverse('project-index'))
     else:
         f = ProjectForm()
@@ -40,7 +43,9 @@ def edit(request, project_id):
     if request.method == 'POST':
         f = ProjectForm(request.POST, instance=p)
         if f.is_valid():
-            f.save()
+            project = f.save(commit=False)
+            project.updated_by = request.user
+            project.save()
             return HttpResponseRedirect(reverse('project-index'))
     else:
         f = ProjectForm(instance=p)
