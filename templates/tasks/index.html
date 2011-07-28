@@ -14,7 +14,7 @@
     <tbody>
     {% for t in tasks %}
       <tr>
-        <td><a href="{% url task-detail t.id %}">{{t.description|truncatechars:200}}</a></td>
+        <td><a href="{% url task-detail t.id %}">{{t.description|truncatewords:50}}</a></td>
         <td>{{t.created_on}}</td>
       </tr>
     {% endfor %}
