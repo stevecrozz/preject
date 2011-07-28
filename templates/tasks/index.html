@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block context-nav %}
+  <ul>
+    <li><a href="{% url task-new %}">new</a></li>
+  </ul>
+{% endblock %}
+
+{% block content %}
+  <table>
+    <thead>
+      <tr><th>description</th><th>created on</th></tr>
+    </thead>
+    <tbody>
+    {% for t in tasks %}
+      <tr>
+        <td><a href="{% url task-detail t.id %}">{{t.description|truncatechars:200}}</a></td>
+        <td>{{t.created_on}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

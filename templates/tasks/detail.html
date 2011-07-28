@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block context-nav %}
+  <ul>
+    <li><a href="{% url task-index %}">index</a></li>
+    <li><a href="{% url task-edit task.id %}">edit</a></li>
+  </ul>
+{% endblock %}
+
+{% block content %}
+  <p>{{task.description}}</p>
+  <p>{{task.created_on}}</p>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<form action="{% url task-new %}" method="post">
+  {% csrf_token %}
+  <ul>
+    {{form.as_ul}}
+    <li class="actions"><input type="submit" value="Create"></input></li>
+  </ul>
+</form>
+{% endblock %}
