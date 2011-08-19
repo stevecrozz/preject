@@ -7,17 +7,21 @@ from projects.forms import ProjectForm
 
 def index(request):
     projects = Project.objects.all()
-    return render_to_response('projects/index.html', { 'projects': projects },
-        context_instance=RequestContext(request))
+    return render_to_response('projects/index.html', {
+        'projects': projects,
+    }, context_instance=RequestContext(request))
 
 def detail(request, project_id):
     try:
         p = Project.objects.get(pk=project_id)
+        tasks = p.task_set.all()
     except Project.DoesNotExist:
         raise Http404
 
-    return render_to_response('projects/detail.html', { 'project': p },
-        context_instance=RequestContext(request))
+    return render_to_response('projects/detail.html', {
+        'project': p,
+        'tasks': tasks,
+    }, context_instance=RequestContext(request))
 
 def new(request):
     if request.method == 'POST':

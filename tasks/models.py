@@ -5,7 +5,8 @@ from projects.models import Project
 class Task(models.Model):
     description = models.TextField(blank=False)
     project = models.ForeignKey(Project)
-    assigned_to = models.ForeignKey(User, related_name='assigned_to')
+    assigned_to = models.ForeignKey(User, related_name='assigned_to',
+            null=True, blank=True)
     created_by = models.ForeignKey(User, editable=False,
         related_name='task_created_by')
     updated_by = models.ForeignKey(User, editable=False,
@@ -14,5 +15,5 @@ class Task(models.Model):
     updated_on = models.DateTimeField('date updated', auto_now=True)
 
     def __unicode__(self):
-        return self.name
+        return self.description
 

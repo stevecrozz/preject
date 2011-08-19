@@ -1,0 +1,6 @@
+- fields: {created_by: 1, created_on: !!timestamp '2011-07-27 23:43:15', description: The
+      bathroom is disgusting and old. Lets tear it all out and start over with brand
+      new everything., name: Remodel the bathroom, updated_by: 1, updated_on: !!timestamp '2011-08-17
+      16:11:55'}
+  model: projects.project
+  pk: 1

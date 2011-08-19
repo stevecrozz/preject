@@ -14,21 +14,35 @@
       form .actions input { float: left; }
       form .actions input { margin-left: 5px; }
       form .actions input:first-of-type { margin-left: 200px; }
-      .nav ul { list-style-type: none; margin: 0; padding: 0;}
-      .nav li { display: inline; }
+      nav ul { list-style-type: none; margin: 0; padding: 0;}
+      nav li { display: inline; }
+      .alpha { width: 650px; float: left; margin-right: 15px; }
+      .beta { float: left; width: 450px; height: 100%; background-color: #ddd; padding: 0 15px; }
+      #quick-new-task { display: none; }
+      #quick-new-task ul { width: inherit; }
+      #quick-new-task textarea { width: 100%; height: 75px; }
     </style>
     <link type="text/css" href="{{STATIC_PREFIX}}jquery-ui/css/le-frog/jquery-ui-1.8.14.custom.css" rel="Stylesheet" />
     <script type="text/javascript" src="{{STATIC_PREFIX}}jquery-ui/js/jquery-1.5.1.min.js"></script>
     <script type="text/javascript" src="{{STATIC_PREFIX}}jquery-ui/js/jquery-ui-1.8.14.custom.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
-        $('.nav a').button();
+        $('nav a').button();
         $('.actions input').button();
+        $('#quick-new-task-toggle').click(function(){
+          $($(this).attr('href')).toggle();
+          return false;
+        });
+        $('#my-pile > tbody').sortable();
+        $('#big-pile > tbody').sortable();
       });
     </script>
   </head>
   <body>
-    <div class="nav">{% block context-nav %}{% endblock %}</div>
-    {% block content %}{% endblock %}
+    <div class="alpha">
+      <nav>{% block context-nav %}{% endblock %}</nav>
+      {% block alpha %}{% endblock %}
+    </div>
+    <div class="beta">{% block beta %}{% endblock %}</div>
   </body>
 </html>

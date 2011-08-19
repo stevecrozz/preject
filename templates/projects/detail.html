@@ -7,8 +7,44 @@
   </ul>
 {% endblock %}
 
-{% block content %}
+{% block alpha %}
   <h1>{{project.name}}</h1>
   <p>{{project.created_on}}</p>
   <p>{{project.description}}</p>
+  <h2>My Pile</h2>
+  <table id="my-pile">
+    {% for t in tasks %}
+      {% if t.assigned_to == user %}
+      <tr>
+        <td>{{t}}</td>
+        <td><a href="{% url task-reject t.id %}?project_id={{project.id}}">Reject</a></td>
+      </tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+{% endblock %}
+
+{% block beta %}
+  <h2>The Big Pile <a id="quick-new-task-toggle" href="#quick-new-task">+</a></h2>
+  <form id="quick-new-task" method="post" action="{% url task-new %}">
+    {% csrf_token %}
+    <input type="hidden" name="project" value="{{project.id}}"></input>
+    <ul>
+      <li><textarea name="description"></textarea></li>
+      <li><input type="submit" value="Create Task"></input></li>
+    </ul>
+  </form>
+  <table id="big-pile">
+    {% for t in tasks %}
+      {% if t.assigned_to != user %}
+      <tr>
+        {% if t.assigned_to %}
+        <td>{{t.assigned_to}}</td>
+        {% else %}
+        <td><a href="{% url task-claim t.id %}?project_id={{project.id}}">Claim</a></td>
+        {% endif %}
+        <td>{{t}}</td></tr>
+      {% endif %}
+    {% endfor %}
+  </table>
 {% endblock %}

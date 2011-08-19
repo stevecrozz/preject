@@ -1,0 +1,32 @@
+- fields: {assigned_to: 1, created_by: 1, created_on: !!timestamp '2011-07-28 00:46:20',
+    description: Remove all the bathroom fixtures and demo the whole room down to
+      the bare frame., project: 1, updated_by: 1, updated_on: !!timestamp '2011-08-17
+      19:10:32'}
+  model: tasks.task
+  pk: 1
+- fields: {assigned_to: null, created_by: 1, created_on: !!timestamp '2011-07-28 11:29:37',
+    description: 'Replumb the drains, water sources and vents to accomodate a larger
+      shower.', project: 1, updated_by: 1, updated_on: !!timestamp '2011-08-17 19:12:16'}
+  model: tasks.task
+  pk: 2
+- fields: {assigned_to: 1, created_by: 1, created_on: !!timestamp '2011-08-17 16:14:41',
+    description: 'Run two new electrical circuits for lights, fan and outlets.', project: 1,
+    updated_by: 1, updated_on: !!timestamp '2011-08-17 19:10:32'}
+  model: tasks.task
+  pk: 3
+- fields: {assigned_to: null, created_by: 1, created_on: !!timestamp '2011-08-17 19:15:09',
+    description: Order tile, project: 1, updated_by: 1, updated_on: !!timestamp '2011-08-17
+      19:15:09'}
+  model: tasks.task
+  pk: 4
+- fields: {assigned_to: null, created_by: 1, created_on: !!timestamp '2011-08-17 19:16:37',
+    description: Finish any framing and inspect for structural integrity., project: 1,
+    updated_by: 1, updated_on: !!timestamp '2011-08-17 19:16:37'}
+  model: tasks.task
+  pk: 5
+- fields: {assigned_to: null, created_by: 1, created_on: !!timestamp '2011-08-17 19:18:47',
+    description: Outsource the shower pan. Get some estimates and hire someone to
+      pour a new shower pan. Make sure everything is sealed up and ready to go for
+      tile., project: 1, updated_by: 1, updated_on: !!timestamp '2011-08-17 19:19:25'}
+  model: tasks.task
+  pk: 6
