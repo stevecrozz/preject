@@ -6,6 +6,7 @@
     <meta charset=utf-8>
     <title>Preject</title>
     <style>
+      body { font-family: sans-serif; font-size: 13px; }
       form label { display:block; float:left; width: 200px; }
       form input[type=text], form textarea, form input[type=password] { width: 300px; margin: 0; padding: 0;}
       form ul { list-style-type: none; padding: 0; margin: 0; width: 520px; }
@@ -16,11 +17,12 @@
       form .actions input:first-of-type { margin-left: 200px; }
       nav ul { list-style-type: none; margin: 0; padding: 0;}
       nav li { display: inline; }
-      .alpha { width: 650px; float: left; margin-right: 15px; }
-      .beta { float: left; width: 450px; height: 100%; background-color: #ddd; padding: 0 15px; }
-      #quick-new-task { display: none; }
-      #quick-new-task ul { width: inherit; }
-      #quick-new-task textarea { width: 100%; height: 75px; }
+      .alpha { width: 650px; float: left; margin-right: 40px; }
+      .beta { float: left; width: 450px; }
+      .pile { list-style-type: none; margin: 0; padding: 0; }
+      .pile li { cursor: pointer; padding: 5px; }
+      .pile .ui-state-highlight { height: 20px; }
+      .project-detail textarea { width: 100%; min-height: 150px; }
     </style>
     <link type="text/css" href="{{STATIC_PREFIX}}jquery-ui/css/le-frog/jquery-ui-1.8.14.custom.css" rel="Stylesheet" />
     <script type="text/javascript" src="{{STATIC_PREFIX}}jquery-ui/js/jquery-1.5.1.min.js"></script>
@@ -29,12 +31,52 @@
       $(document).ready(function(){
         $('nav a').button();
         $('.actions input').button();
-        $('#quick-new-task-toggle').click(function(){
-          $($(this).attr('href')).toggle();
+        $(".pile li").hover(function(){
+          $(this).toggleClass('ui-state-hover');
+        });
+        $(".pile li a").click(function(){
+          $(this).closest('li').click();
           return false;
         });
-        $('#my-pile > tbody').sortable();
-        $('#big-pile > tbody').sortable();
+        $(".pile li").click(function(){
+          var li = $(this);
+          li.toggleClass('ui-state-active')
+            .siblings('li').removeClass('ui-state-active');
+          var a = li.find('a');
+          if (li.hasClass('ui-state-active')) {
+            $.get(a.attr('href'), function(response){
+              window.history.pushState({
+                projectDetail: response,
+                selectedTaskId: li.data('taskId')
+              }, "", a.attr('href'));
+              $('#quick-new-task').hide();
+              $('.project-detail').html(response).show();
+            });
+          } else {
+            $('.project-detail').hide();
+            $('#quick-new-task').show();
+            window.history.pushState({
+              projectDetail: '',
+              selectedTaskId: null,
+            }, "", a.closest('ul').data('project'));
+          }
+        });
+        $(".pile").sortable({
+          placeholder: "ui-state-highlight"
+        });
+        window.onpopstate = function(event){
+          $('.pile').find('li').removeClass('ui-state-active');
+          if (event.state && event.state.selectedTaskId) {
+            $('.pile')
+              .find('[data-taskId=' + event.state.selectedTaskId + ']')
+              .addClass('ui-state-active');
+            $('.project-detail').html(event.state.projectDetail).show();
+            $('#quick-new-task').hide();
+          } else {
+            $('.project-detail').html(event.state.projectDetail).hide();
+            $('#quick-new-task').show();
+          }
+        };
       });
     </script>
   </head>

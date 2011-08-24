@@ -11,17 +11,28 @@ def index(request):
         'projects': projects,
     }, context_instance=RequestContext(request))
 
-def detail(request, project_id):
+def detail(request, **kwargs):
     try:
-        p = Project.objects.get(pk=project_id)
+        p = Project.objects.get(pk=kwargs['project_id'])
         tasks = p.task_set.all()
+        template_vars = {
+          'project': p,
+          'tasks': tasks,
+        }
+        if 'task_id' in kwargs:
+            t = tasks.get(pk=kwargs['task_id'])
+            template_vars['task'] = t
     except Project.DoesNotExist:
         raise Http404
 
-    return render_to_response('projects/detail.html', {
-        'project': p,
-        'tasks': tasks,
-    }, context_instance=RequestContext(request))
+    if request.is_ajax():
+        return render_to_response('tasks/_detail.html',
+          template_vars,
+          context_instance=RequestContext(request))
+    else:
+        return render_to_response('projects/detail.html',
+          template_vars,
+          context_instance=RequestContext(request))
 
 def new(request):
     if request.method == 'POST':
