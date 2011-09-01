@@ -43,6 +43,8 @@
               var textArea = $('<textarea>');
               $('.project-detail').html(textArea);
               doc.attach_textarea(textArea.get(0));
+              $('.project-detail').show();
+              $('#quick-new-task').hide();
             });
           };
           if (shareJsConn === null) {
@@ -56,6 +58,16 @@
           } else {
             openDoc();
           }
+        };
+
+        var projectDetail = function(){
+          if (currentDoc !== null) {
+            currentDoc.close(function(){
+              currentDoc = null;
+            });
+          }
+          $('.project-detail').html("").hide();
+          $('#quick-new-task').show();
         };
 
         $('nav a').button();
@@ -78,13 +90,10 @@
             window.history.pushState({
               selectedTaskId: tid
             }, "", a.attr('href'));
-            $('#quick-new-task').hide();
-            $('.project-detail').show();
           } else {
-            $('.project-detail').hide();
-            $('#quick-new-task').show();
+            projectDetail();
             window.history.pushState({
-              selectedTaskId: null,
+              selectedTaskId: null
             }, "", a.closest('ul').data('project'));
           }
         });
@@ -92,19 +101,22 @@
         //  placeholder: "ui-state-highlight"
         //});
         window.onpopstate = function(event){
-          if (event.state && event.state.selectedTaskId) {
+          if (event.state) { // popped a state
             $('.pile').find('li').removeClass('ui-state-active');
-            $('.pile')
-              .find('[data-taskId=' + event.state.selectedTaskId + ']')
-              .addClass('ui-state-active');
-            switchDoc(event.state.selectedTaskId);
-          } else {
+            if (event.state.selectedTaskId === null) {
+              projectDetail();
+            } else {
+              $('.pile')
+                .find('[data-taskId=' + event.state.selectedTaskId + ']')
+                .addClass('ui-state-active');
+              switchDoc(event.state.selectedTaskId);
+            }
+          } else { // no pushState, just a regular page load
             var activeLi = $('.pile').find('li.ui-state-active');
             if (activeLi.length) {
               switchDoc(activeLi.data('taskid'));
             } else {
-              $('.project-detail').html("").hide();
-              $('#quick-new-task').show();
+              projectDetail();
             }
           }
         };
