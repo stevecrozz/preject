@@ -1,6 +1,10 @@
 {% extends 'layout.html' %}
 
+
 {% block context-nav %}
+
+
+
   <ul>
     <li><a href="{% url project-index %}">index</a></li>
     <li><a href="{% url project-edit project.id %}">edit</a></li>
@@ -24,12 +28,8 @@
       <li><input type="submit" value="Create Task"></input></li>
     </ul>
   </form>
-  {% if task %}
   <div class="project-detail">
-    {% include 'tasks/_detail.html' %}
-  {% else %}
-  <div class="project-detail" style="display:none;">
-  {% endif %}
+    <textarea></textarea>
   </div>
 {% endblock %}
 
@@ -42,7 +42,9 @@
     {% else %}
     <li class="ui-state-default" data-taskId="{{t.id}}">
     {% endif %}
-      <a href="{% url project-detail-task project.id, t.id %}">{{t}}</a>
+      <a href="{% url project-detail-task project.id, t.id %}">
+        {{t|truncatewords:10}}
+      </a>
     </li>
     {% endfor %}
   </ul>
