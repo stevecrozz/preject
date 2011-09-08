@@ -29,46 +29,128 @@
     <script type="text/javascript" src="{{STATIC_PREFIX}}jquery-ui/js/jquery-ui-1.8.14.custom.min.js"></script>
     <script src="{{SHAREJS_URL}}/socket.io/socket.io.js"></script>
     <script src="{{SHAREJS_URL}}/share/share.uncompressed.js"></script>
-    <script src="{{SHAREJS_URL}}/share/textarea.js"></script>
+    <script src="{{SHAREJS_URL}}/share/json.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
-        var currentDoc  = null;
         var shareJsConn = null;
-
-        var switchDoc = function(tid){
-          var tid = tid;
-          var openDoc = function(){
-            shareJsConn.open('task/' + tid, 'text', function(doc, error){
-              currentDoc = doc;
-              var textArea = $('<textarea>');
-              $('.project-detail').html(textArea);
-              doc.attach_textarea(textArea.get(0));
-              $('.project-detail').show();
-              $('#quick-new-task').hide();
-            });
+        var project = new function(){
+          var self = this;
+          this.id = null;
+          this.rootNode = null;
+          this.doc = null;
+          this.dirty = false;
+          this.onOpenedDeferred = $.Deferred();
+          this.onOpened = this.onOpenedDeferred.promise();
+          this.render = function(op){
+            var createTaskLi = function(id){
+              $('<li>', {
+                class: 'ui-state-default',
+                text: self.doc.snapshot['task:' + id + ':description']
+              }).data('taskId', id).appendTo('.pile');
+            };
+            if (op) {
+              for (var i in op) {
+                if (op[i].p[0] == 'tasks') {
+                  if (op[i].li) {
+                    // created new task
+                    createTaskLi(op[i].li);
+                  }
+                }
+              }
+              // some operation has happened
+            } else {
+              // brand new project, initialize display
+              for (var i in self.doc.snapshot.tasks) {
+                var id = self.doc.snapshot.tasks[i];
+                createTaskLi(id);
+              }
+            }
+            // render the changes
+            self.dirtyOff();
           };
-          if (shareJsConn === null) {
-            shareJsConn = new sharejs.Connection('{{SHAREJS_URL}}/sjs');
-          }
-          if (currentDoc !== null) {
-            // Prevent further editting
-            $('.project-detail textarea').attr('disabled', true);
-            // Close the current document and call back when finished closing
-            currentDoc.close(openDoc);
-          } else {
-            openDoc();
-          }
+          this.template = {
+            schema: 1,
+            description: '',
+            tasks: []
+          };
+          this.dirtyOn = function(){
+            self.dirty = true;
+            self.indicateDirtiness();
+          };
+          this.dirtyOff = function(){
+            self.dirty = false;
+            self.indicateDirtiness();
+          };
+          this.indicateDirtiness = function(){
+            // toggle some visual dirtiness indicator
+          };
+          this.open = function(rootNode, pid){
+            self.rootNode = $(rootNode);
+            self.id = pid;
+            if (shareJsConn === null) {
+              shareJsConn = new sharejs.Connection('{{SHAREJS_URL}}/sjs');
+            }
+            shareJsConn.open('project/' + pid, sharejs.types.json,
+              function(doc, error){
+              self.doc = doc;
+              self.doc.on('change', self.render);
+              if (self.doc.created) {
+                // create a new project from the template
+                doc.submitOp({p:[],od:null,oi:self.template});
+              } else {
+                self.render();
+              }
+            });
+            self.rootNode.find('form').submit(function(){
+              self.addTask($(this).serializeArray());
+              return false;
+            });
+            self.onOpenedDeferred.resolve();
+          };
+          self.addTask = function(params){
+            var tid = (new Date).getTime();
+            var description = "";
+            $(params).each(function(){
+              if (this.name == 'description') {
+                description = this.value;
+              }
+            });
+            self.doc.submitOp([
+              { p: ['tasks', self.doc.snapshot.tasks.length], li: tid },
+              { p: ['task:' + tid + ':description'], oi: '' },
+              { p: ['task:' + tid + ':description', 0], si: description }
+            ]);
+          };
         };
 
-        var projectDetail = function(){
-          if (currentDoc !== null) {
-            currentDoc.close(function(){
-              currentDoc = null;
-            });
-          }
-          $('.project-detail').html("").hide();
-          $('#quick-new-task').show();
+        var task = new function(){
+          var self = this;
+          this.id = null;
+          this.open = function(tid){
+            self.id = tid;
+            var o = function(){
+              $('.project-detail').hide();
+              $('.task-detail').show();
+              // open the task
+            }
+
+            // make sure the project is open
+            if (!project.id){
+              project.onOpened.done(o);
+            } else {
+              o();
+            }
+          };
+          this.close = function(){
+            $('.project-detail').show();
+            $('.task-detail').hide();
+          };
         };
+
+        $(".project-detail").each(function(){
+          var pid = $(this).data('projectId');
+          project.open(this, pid);
+        });
 
         $('nav a').button();
         $('.actions input').button();
@@ -86,12 +168,12 @@
           var a = li.find('a');
           if (li.hasClass('ui-state-active')) {
             var tid = li.data('taskid');
-            switchDoc(tid);
+            task.open(tid);
             window.history.pushState({
               selectedTaskId: tid
             }, "", a.attr('href'));
           } else {
-            projectDetail();
+            task.close();
             window.history.pushState({
               selectedTaskId: null
             }, "", a.closest('ul').data('project'));
@@ -104,19 +186,19 @@
           if (event.state) { // popped a state
             $('.pile').find('li').removeClass('ui-state-active');
             if (event.state.selectedTaskId === null) {
-              projectDetail();
+              task.close();
             } else {
               $('.pile')
                 .find('[data-taskId=' + event.state.selectedTaskId + ']')
                 .addClass('ui-state-active');
-              switchDoc(event.state.selectedTaskId);
+              task.open(event.state.selectedTaskId);
             }
           } else { // no pushState, just a regular page load
             var activeLi = $('.pile').find('li.ui-state-active');
             if (activeLi.length) {
-              switchDoc(activeLi.data('taskid'));
+              task.open(activeLi.data('taskid'));
             } else {
-              projectDetail();
+              task.close();
             }
           }
         };

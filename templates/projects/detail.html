@@ -12,23 +12,19 @@
 {% endblock %}
 
 {% block alpha %}
-  <h1>{{project.name}}</h1>
-  <p>{{project.created_on}}</p>
-  <p>{{project.description}}</p>
-  {% if task %}
-  <form id="quick-new-task" method="post" action="{% url task-new %}"
-    style="display:none;">
-  {% else %}
-  <form id="quick-new-task" method="post" action="{% url task-new %}">
-  {% endif %}
-    {% csrf_token %}
-    <input type="hidden" name="project" value="{{project.id}}"></input>
-    <ul>
-      <li><textarea name="description"></textarea></li>
-      <li><input type="submit" value="Create Task"></input></li>
-    </ul>
-  </form>
-  <div class="project-detail">
+  <div class="project-detail" data-projectId="{{project.id}}" style="display:none;">
+    <h1>{{project.name}}</h1>
+    <p>{{project.created_on}}</p>
+    <p>{{project.description}}</p>
+    <form id="quick-new-task" method="post" action="/tasks">
+      <input type="hidden" name="project" value="{{project.id}}"></input>
+      <ul>
+        <li><textarea name="description"></textarea></li>
+        <li><input type="submit" value="Create Task"></input></li>
+      </ul>
+    </form>
+  </div>
+  <div class="task-detail" style="display:none;">
     <textarea></textarea>
   </div>
 {% endblock %}
@@ -36,16 +32,5 @@
 {% block beta %}
   <h2>The Pile</h2>
   <ul class="pile" data-project="{% url project-detail project.id %}">
-    {% for t in tasks %}
-    {% if t == task %}
-    <li class="ui-state-default ui-state-active" data-taskId="{{t.id}}">
-    {% else %}
-    <li class="ui-state-default" data-taskId="{{t.id}}">
-    {% endif %}
-      <a href="{% url project-detail-task project.id, t.id %}">
-        {{t|truncatewords:10}}
-      </a>
-    </li>
-    {% endfor %}
   </ul>
 {% endblock %}
