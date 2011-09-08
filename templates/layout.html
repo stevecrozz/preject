@@ -27,9 +27,9 @@
     <link type="text/css" href="{{STATIC_PREFIX}}jquery-ui/css/le-frog/jquery-ui-1.8.14.custom.css" rel="Stylesheet" />
     <script type="text/javascript" src="{{STATIC_PREFIX}}jquery-ui/js/jquery-1.5.1.min.js"></script>
     <script type="text/javascript" src="{{STATIC_PREFIX}}jquery-ui/js/jquery-ui-1.8.14.custom.min.js"></script>
-    <script src="http://localhost:8001/socket.io/socket.io.js"></script>
-    <script src="http://localhost:8001/share/share.uncompressed.js"></script>
-    <script src="http://localhost:8001/share/textarea.js"></script>
+    <script src="{{SHAREJS_URL}}/socket.io/socket.io.js"></script>
+    <script src="{{SHAREJS_URL}}/share/share.uncompressed.js"></script>
+    <script src="{{SHAREJS_URL}}/share/textarea.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
         var currentDoc  = null;
@@ -48,7 +48,7 @@
             });
           };
           if (shareJsConn === null) {
-            shareJsConn = new sharejs.Connection('http://localhost:8001/sjs');
+            shareJsConn = new sharejs.Connection('{{SHAREJS_URL}}/sjs');
           }
           if (currentDoc !== null) {
             // Prevent further editting

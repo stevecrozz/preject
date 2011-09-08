@@ -92,8 +92,14 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'middleware.login_required_middleware.LoginRequiredMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+TEMPLATE_CONTEXT_PROCESSORS += (
+    'tasks.context_processors.sharejs_url',
 )
 
 ROOT_URLCONF = 'preject.urls'
@@ -109,6 +115,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'projects',
     'tasks',
 )
@@ -116,3 +123,5 @@ INSTALLED_APPS = (
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/projects/'
 
+SHAREJS_URL = 'http://localhost:8001'
+INTERNAL_IPS = ('127.0.0.1',)
