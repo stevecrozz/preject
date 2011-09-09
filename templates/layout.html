@@ -55,6 +55,34 @@
                     // created new task
                     createTaskLi(op[i].li);
                   }
+
+                  if (op[i].lm) {
+                    // sorted the list
+                    var findTaskLi = function(tid){
+                      var ret = null;
+                      $('.pile li').each(function(){
+                        var li = $(this);
+                        if (li.data('taskId') == tid){
+                          ret = li;
+                        }
+                      });
+                      return ret;
+                    };
+
+                    function sort(){
+                      $('.pile li').each(function(i){
+                        if (self.doc.snapshot.tasks[i] != $(this).data('taskId')) {
+                          var taskLi = findTaskLi(self.doc.snapshot.tasks[i]);
+                          if (taskLi) {
+                            $(this).before(taskLi);
+                            sort();
+                            return false;
+                          }
+                        }
+                      });
+                    };
+                    sort();
+                  }
                 }
               }
               // some operation has happened
@@ -154,14 +182,10 @@
 
         $('nav a').button();
         $('.actions input').button();
-        $(".pile li").hover(function(){
+        $(".pile li").live('hover', function(){
           $(this).toggleClass('ui-state-hover');
         });
-        $(".pile li a").click(function(){
-          $(this).closest('li').click();
-          return false;
-        });
-        $(".pile li").click(function(){
+        $(".pile li").live('click', function(){
           var li = $(this);
           li.toggleClass('ui-state-active')
             .siblings('li').removeClass('ui-state-active');
@@ -179,9 +203,18 @@
             }, "", a.closest('ul').data('project'));
           }
         });
-        //$(".pile").sortable({
-        //  placeholder: "ui-state-highlight"
-        //});
+        $(".pile").sortable({
+          placeholder: "ui-state-highlight",
+          start: function(event, ui){
+            ui.item.originalIndex = ui.item.index();
+          },
+          update: function(event, ui){
+            project.doc.submitOp({
+              p: ['tasks', ui.item.originalIndex],
+              lm: ui.item.index() + 1
+            });
+          }
+        });
         window.onpopstate = function(event){
           if (event.state) { // popped a state
             $('.pile').find('li').removeClass('ui-state-active');
