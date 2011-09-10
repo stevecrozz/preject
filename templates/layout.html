@@ -51,37 +51,32 @@
             if (op) {
               for (var i in op) {
                 if (op[i].p[0] == 'tasks') {
-                  if (op[i].li) {
+                  if (typeof op[i].li !== 'undefined') {
                     // created new task
                     createTaskLi(op[i].li);
                   }
 
-                  if (op[i].lm) {
-                    // sorted the list
-                    var findTaskLi = function(tid){
-                      var ret = null;
-                      $('.pile li').each(function(){
-                        var li = $(this);
-                        if (li.data('taskId') == tid){
-                          ret = li;
+                  if (typeof op[i].lm != 'undefined') {
+                    // sorted the pile
+                    var taskLi = null;
+                    var tid = self.doc.snapshot.tasks[op[i].lm];
+                    $('.pile li').each(function(){
+                      var li = $(this);
+                      if (li.data('taskId') == tid){
+                        taskLi = li;
+                        return false;
+                      }
+                    });
+                    if (taskLi !== null) {
+                      var occupant = $('.pile li').eq(op[i].lm);
+                      if (occupant.data('taskId') !== taskLi.data('taskId')) {
+                        if (occupant.index() > taskLi.index()) {
+                          occupant.after(taskLi);
+                        } else {
+                          occupant.before(taskLi);
                         }
-                      });
-                      return ret;
-                    };
-
-                    function sort(){
-                      $('.pile li').each(function(i){
-                        if (self.doc.snapshot.tasks[i] != $(this).data('taskId')) {
-                          var taskLi = findTaskLi(self.doc.snapshot.tasks[i]);
-                          if (taskLi) {
-                            $(this).before(taskLi);
-                            sort();
-                            return false;
-                          }
-                        }
-                      });
-                    };
-                    sort();
+                      }
+                    }
                   }
                 }
               }
@@ -209,9 +204,10 @@
             ui.item.originalIndex = ui.item.index();
           },
           update: function(event, ui){
+            var newIndex = ui.item.index();
             project.doc.submitOp({
               p: ['tasks', ui.item.originalIndex],
-              lm: ui.item.index() + 1
+              lm: newIndex
             });
           }
         });
