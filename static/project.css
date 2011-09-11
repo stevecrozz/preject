@@ -1,0 +1,17 @@
+body { font-family: sans-serif; font-size: 13px; }
+form label { display:block; float:left; width: 200px; }
+form input[type=text], form textarea, form input[type=password] { width: 300px; margin: 0; padding: 0;}
+form ul { list-style-type: none; padding: 0; margin: 0; width: 520px; }
+form ul.errorlist { color: red; }
+form li { margin: 5px 0; }
+form .actions input { float: left; }
+form .actions input { margin-left: 5px; }
+form .actions input:first-of-type { margin-left: 200px; }
+nav ul { list-style-type: none; margin: 0; padding: 0;}
+nav li { display: inline; }
+.alpha { width: 650px; float: left; margin-right: 40px; }
+.beta { float: left; width: 450px; }
+.pile { list-style-type: none; margin: 0; padding: 0; }
+.pile li { cursor: pointer; padding: 5px; }
+.pile .ui-state-highlight { height: 20px; }
+.project-detail textarea { width: 100%; min-height: 150px; }

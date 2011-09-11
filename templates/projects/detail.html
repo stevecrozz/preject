@@ -2,9 +2,6 @@
 
 
 {% block context-nav %}
-
-
-
   <ul>
     <li><a href="{% url project-index %}">index</a></li>
     <li><a href="{% url project-edit project.id %}">edit</a></li>
@@ -12,7 +9,10 @@
 {% endblock %}
 
 {% block alpha %}
-  <div class="project-detail" data-projectId="{{project.id}}" style="display:none;">
+  <div class="project-detail"
+    data-projectPath="/project/{{project.id}}"
+    data-shareJsUrl="{{SHAREJS_URL}}/sjs"
+    style="display:none;">
     <h1>{{project.name}}</h1>
     <p>{{project.created_on}}</p>
     <p>{{project.description}}</p>
