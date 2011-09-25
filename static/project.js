@@ -34,6 +34,17 @@ $(document).ready(function(){
                 });
                 return ret;
               };
+              var li = findTaskLi(self.doc.snapshot.tasks[op[i].lm]);
+              var occupant = $('.pile li').eq(op[i].lm);
+
+              // actually move the item if it's not already in the right place
+              if (li.data('taskId') !== occupant.data('taskId')) {
+                if (occupant.index() >= li.index()) {
+                  occupant.after(li);
+                } else {
+                  occupant.before(li);
+                }
+              }
             }
           }
         }
