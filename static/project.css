@@ -12,6 +12,6 @@ nav li { display: inline; }
 .alpha { width: 650px; float: left; margin-right: 40px; }
 .beta { float: left; width: 450px; }
 .pile { list-style-type: none; margin: 0; padding: 0; }
-.pile li { cursor: pointer; padding: 5px; }
+.pile li { cursor: pointer; padding: 5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .pile .ui-state-highlight { height: 20px; }
 .project-detail textarea { width: 100%; min-height: 150px; }

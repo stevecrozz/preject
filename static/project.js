@@ -7,13 +7,13 @@ $(document).ready(function(){
     this.dirty = false;
     this.onOpenedDeferred = $.Deferred();
     this.onOpened = this.onOpenedDeferred.promise();
-    this.render = function(op){
-      var createTaskLi = function(id){
-        $('<li>', {
-          class: 'ui-state-default',
-          text: self.doc.snapshot['task:' + id + ':description']
-        }).data('taskId', id).appendTo('.pile');
-      };
+    var createTaskLi = function(id){
+      $('<li>', {
+        class: 'ui-state-default',
+        text: self.doc.snapshot['task:' + id + ':description']
+      }).data('taskId', id).appendTo('.pile');
+    };
+    this.handleChange = function(op){
       if (op) {
         for (var i in op) {
           if (op[i].p[0] == 'tasks') {
@@ -48,16 +48,15 @@ $(document).ready(function(){
             }
           }
         }
-        // some operation has happened
-      } else {
-        // brand new project, initialize display
-        for (var i in self.doc.snapshot.tasks) {
-          var id = self.doc.snapshot.tasks[i];
-          createTaskLi(id);
-        }
       }
-      // render the changes
       self.dirtyOff();
+    };
+    this.initialize = function(){
+      // brand new project, initialize display
+      for (var i in self.doc.snapshot.tasks) {
+        var id = self.doc.snapshot.tasks[i];
+        createTaskLi(id);
+      }
     };
     this.template = {
       schema: 1,
@@ -84,12 +83,12 @@ $(document).ready(function(){
         function(doc, error){
 
         self.doc = doc;
-        self.doc.on('change', self.render);
+        self.doc.on('change', self.handleChange);
         if (self.doc.created) {
           // create a new project from the template
           doc.submitOp({p:[],od:null,oi:self.template});
         } else {
-          self.render();
+          self.initialize();
         }
       });
       self.rootNode.find('form').submit(function(){
@@ -138,15 +137,21 @@ $(document).ready(function(){
     };
   };
 
+  // If there is a project, then open it
   $(".project-detail").each(function(){
     project.open($(this));
   });
 
+  // Buttonize the buttons
   $('nav a').button();
   $('.actions input').button();
+
+  // Add the visual feedback onHover
   $(".pile li").live('hover', function(){
     $(this).toggleClass('ui-state-hover');
   });
+
+  // Bind click handlers for task selection
   $(".pile li").live('click', function(){
     var li = $(this);
     li.toggleClass('ui-state-active')
@@ -165,6 +170,8 @@ $(document).ready(function(){
       }, "", a.closest('ul').data('project'));
     }
   });
+
+  // Setup the sortable, and bind interesting events
   $(".pile").sortable({
     placeholder: "ui-state-highlight",
     start: function(event, ui){
@@ -178,6 +185,8 @@ $(document).ready(function(){
       });
     }
   });
+
+  // Handle pop states
   window.onpopstate = function(event){
     if (event.state) { // popped a state
       $('.pile').find('li').removeClass('ui-state-active');
@@ -198,4 +207,5 @@ $(document).ready(function(){
       }
     }
   };
+
 });
